@@ -11,7 +11,7 @@ fn is_sock(fd: FdType) -> bool {
     unsafe {
         let mut stat: libc::stat = mem::zeroed();
         libc::fstat(fd as libc::c_int, &mut stat);
-        (stat.st_mode & libc::S_IFMT as libc::c_uint) == libc::S_IFSOCK as libc::c_uint
+        (stat.st_mode & libc::S_IFMT as libc::mode_t) == libc::S_IFSOCK as libc::mode_t
     }
 }
 
