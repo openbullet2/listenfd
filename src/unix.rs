@@ -30,9 +30,9 @@ fn validate_socket(
 
     let is_valid = unsafe {
         let mut ty: libc::c_int = mem::zeroed();
-        let mut ty_len = mem::size_of_val(&ty) as libc::c_int;
+        let mut ty_len = mem::size_of_val(&ty) as libc::socklen_t;
         let mut sockaddr: libc::sockaddr = mem::zeroed();
-        let mut sockaddr_len = mem::size_of_val(&sockaddr) as libc::c_int;
+        let mut sockaddr_len = mem::size_of_val(&sockaddr) as libc::socklen_t;
         libc::getsockname(fd, &mut sockaddr, &mut sockaddr_len) == 0
             && libc::getsockopt(
                 fd,
