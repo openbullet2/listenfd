@@ -11,7 +11,7 @@ fn is_sock(fd: FdType) -> bool {
     unsafe {
         let mut stat: libc::stat = mem::zeroed();
         libc::fstat(fd as libc::c_int, &mut stat);
-        (stat.st_mode & libc::S_IFMT) == libc::S_IFSOCK.into()
+        (stat.st_mode & libc::S_IFMT.into()) == libc::S_IFSOCK.into()
     }
 }
 
@@ -30,16 +30,16 @@ fn validate_socket(
 
     let is_valid = unsafe {
         let mut ty: libc::c_int = mem::zeroed();
-        let mut ty_len = mem::size_of_val(&ty) as libc::c_uint;
+        let mut ty_len = mem::size_of_val(&ty) as libc::c_int;
         let mut sockaddr: libc::sockaddr = mem::zeroed();
-        let mut sockaddr_len = mem::size_of_val(&sockaddr) as libc::c_uint;
-        libc::getsockname(fd, &mut sockaddr.into(), &mut sockaddr_len.into()) == 0
+        let mut sockaddr_len = mem::size_of_val(&sockaddr) as libc::c_int;
+        libc::getsockname(fd, &mut sockaddr, &mut sockaddr_len) == 0
             && libc::getsockopt(
                 fd,
                 libc::SOL_SOCKET,
                 libc::SO_TYPE,
                 &mut ty as *mut i32 as *mut libc::c_void,
-                &mut ty_len.into(),
+                &mut ty_len,
             ) == 0
             && ty == sock_type
             && (sockaddr.sa_family as libc::c_int == sock_fam
