@@ -10,7 +10,7 @@ pub type FdType = RawFd;
 #[cfg(all(target_os = "android", target_pointer_width = "32", target_arch="arm"))]
 pub type TypeModeT = libc::c_uint;
 
-#[cfg(all(not(target_os = "android"), not(target_pointer_width = "32"), not(target_arch="arm")))]
+#[cfg(any(not(target_os = "android"), not(target_pointer_width = "32"), not(target_arch="arm")))]
 pub type TypeModeT = libc::mode_t;
 
 
