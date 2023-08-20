@@ -7,11 +7,22 @@ use std::os::unix::net::{UnixDatagram, UnixListener};
 
 pub type FdType = RawFd;
 
+#[cfg(all(target_os = "android", target_pointer_width = "32", target_arch="arm"))]
+pub type TypeModeT = libc::c_uint;
+
+#[cfg(all(not(target_os = "android"), not(target_pointer_width = "32"), not(target_arch="arm")))]
+pub type TypeModeT = libc::mode_t;
+
+
+static S_IFMT: TypeModeT = libc::S_IFMT as TypeModeT;
+static S_IFSOCK: TypeModeT = libc::S_IFSOCK as TypeModeT;
+
+
 fn is_sock(fd: FdType) -> bool {
     unsafe {
         let mut stat: libc::stat = mem::zeroed();
         libc::fstat(fd as libc::c_int, &mut stat);
-        (stat.st_mode & libc::S_IFMT as libc::c_uint) == libc::S_IFSOCK as libc::c_uint
+        (stat.st_mode & S_IFMT) == S_IFSOCK
     }
 }
 
